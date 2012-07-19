@@ -1,6 +1,8 @@
 #include <ncurses.h>
 #include "character.h"
-#include <string.h>
+#include <string>
+#include <sstream>
+#include <cstring>
 //TODO: Make character use strings
 //TODO: We will pick gender from a list
 //TODO: Create basic attribute of characters
@@ -16,16 +18,32 @@ int main(int argc, char *argv[])
 	printw("IT WORKS CHLOE !!!\n"); //print to window 
 	attroff(COLOR_PAIR(1)); //ends it
 
-	int key; //makes a new string, key
+	char key; //makes a new string, key
 	printw("Input name: \n");
-   key=getch(); //assign keyboard input of one character to key
-	character player=character(key);
-	char moniker=(char) player.getName();
+	std::string buffer= " ";
+	while(key!= 'q')
+	{
+		key=getch();
+		buffer+=key;
+	}
+	
+        //key=getch(); //assign keyboard input of one character to key
+	character player=character(buffer);
+	std::string moniker= player.getName();
 	attron(A_BOLD); //starts bold attribute
-	printw("Your name is : %i", moniker);
+
+	std::stringstream newstream;
+	newstream << "Your name is: "<< moniker ;
+	std::string newerstring= newstream.str();
+	
+	char *a=new char[newerstring.size()+1];
+	a[newerstring.size()]=0;
+	memcpy(a,newerstring.c_str(),newerstring.size());
+
+	mvprintw(2,2,a);     //prints to screen
 	attroff(A_BOLD);
 
 
-	getch();
 	endwin();
 }
+	
