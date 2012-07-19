@@ -1,16 +1,18 @@
-#include <string.h>
+//#include <string.h>
+#include <string>
+
 class character
 {
 	public:
-	      character(int Name);//nondefault constructor
-			int getName();
-			int Name;
+	      character(std::string Name);//nondefault constructor
+			std::string getName();
+			std::string Name;
 };
-character::character(int name)
+character::character(std::string name)
 {
     Name=name;
 }
-int character::getName()
+std::string character::getName()
 {
 	return Name;
 }
