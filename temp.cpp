@@ -9,22 +9,27 @@
 int main(int argc, char *argv[])
 {	initscr();			/* Start curses mode 		*/
 	start_color();			/* Start color 			*/
+	assume_default_colors(COLOR_GREEN,COLOR_BLACK);
 	init_pair(1, COLOR_RED, COLOR_GREEN); //Makes a new color pair red text on green background 
 	noecho(); //cancel output to the screen when using getch
 	keypad(stdscr, TRUE); //allows input of key like F2 or ENTER
 
 	box(stdscr,0,0); //puts a box around the window
 	attron(COLOR_PAIR(1)); //starts color attribute
+	move(1,1);
+	wrefresh(stdscr);
 	printw("IT WORKS CHLOE !!!\n"); //print to window 
 	attroff(COLOR_PAIR(1)); //ends it
 
 	char key; //makes a new string, key
+	move(2,1);
 	printw("Input name: \n");
 	std::string buffer= " ";
-	while(key!= 'q')
+	move(3,1);
+	while(key!="KEY_ENTER")
 	{
 		key=getch();
-		if(key=='q')
+		if(key=="KEY_ENTER")
 		{
 			break;
 		}
