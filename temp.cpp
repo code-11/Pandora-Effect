@@ -23,12 +23,11 @@ int main(int argc, char *argv[])
 	std::string buffer= " ";
 	while(key!= 'q')
 	{
+		key=getch();
 		if(key=='q')
 		{
 			break;
 		}
-
-		key=getch();
 		buffer+=key;
 
 		char *b=new char[0];
@@ -48,7 +47,7 @@ int main(int argc, char *argv[])
 	//Creating a character array
 	char *a=new char[newerstring.size()+1];
 	//makes the newerstring.size th element zero	
-	a[newerstring.size()]=0;
+	//a[newerstring.size()]=0;
 	//copies newerstring to character array a
 	memcpy(a,newerstring.c_str(),newerstring.size());
 	//move cursor to 5,5
