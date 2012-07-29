@@ -23,27 +23,39 @@ int main(int argc, char *argv[])
 	std::string buffer= " ";
 	while(key!= 'q')
 	{
+		if(key=='q')
+		{
+			break;
+		}
+
 		key=getch();
 		buffer+=key;
-		character player=character(buffer);
-		std::string moniker= player.getName();
-		attron(A_BOLD); //starts bold attribute
 
-		std::stringstream newstream;
-		newstream << "Your name is: "<< moniker ;
-		std::string newerstring= newstream.str();
+		char *b=new char[0];
+		b[0]=key;		
 	
-		//Creating a character array
-		char *a=new char[newerstring.size()+1];
-		//makes the newerstring.size th element zero	
-		a[newerstring.size()]=0;
-		//copies newerstring to character array a
-		memcpy(a,newerstring.c_str(),newerstring.size());
-		//move cursor to 5,5
-		move(5,5);
-		printw(a);
+		printw(b);
 		wrefresh(stdscr);
 	}
+	character player=character(buffer);
+	std::string moniker= player.getName();
+	attron(A_BOLD); //starts bold attribute
+
+	std::stringstream newstream;
+	newstream << "Your name is: "<< moniker ;
+	std::string newerstring= newstream.str();
+
+	//Creating a character array
+	char *a=new char[newerstring.size()+1];
+	//makes the newerstring.size th element zero	
+	a[newerstring.size()]=0;
+	//copies newerstring to character array a
+	memcpy(a,newerstring.c_str(),newerstring.size());
+	//move cursor to 5,5
+	
+	move(5,5);
+	printw(a);
+	wrefresh(stdscr);
 	
         //key=getch(); //assign keyboard input of one character to key
 	attroff(A_BOLD);
