@@ -26,10 +26,10 @@ int main(int argc, char *argv[])
 	printw("Input name: \n");
 	std::string buffer= " ";
 	move(3,1);
-	while(key!="KEY_ENTER")
+	while(key!=10)
 	{
 		key=getch();
-		if(key=="KEY_ENTER")
+		if(key==10)
 		{
 			break;
 		}
@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
 		char *b=new char[0];
 		b[0]=key;		
 	
-		printw(b);
+		printw((char*)b[0]);
 		wrefresh(stdscr);
 	}
 	character player=character(buffer);
