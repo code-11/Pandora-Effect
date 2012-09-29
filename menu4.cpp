@@ -11,20 +11,17 @@ char *choices[] = {
                         "Load Game",
                         "Options",
                         "Help",
-                        "Exit",
-                  };
+};
                   
 char *opt_choices[] = {
         						"Difficulty   1_2_3",
                         "Sound        On_Off",
-                        "Back to Main q",
-                  };     
+};     
              
 char *help_choices[] = {
         						"You cry for help...",
                         "but no one can hear you.",
-                        "Back to Main",
-                  };  
+};  
 
 char *load_choices[] = {
 								"Load Game 1 ____ No game saved",
@@ -49,7 +46,7 @@ void load_menu()
 	int n_choices, i;
 	ITEM *cur_item;
 	WINDOW *load_win;
-	load_win = newwin(5, 31, ((LINES/2)-2), ((COLS/3)-6));
+	load_win = newwin(5, 31, ((LINES/2)-2), ((COLS/3)-1));
 
 	//box(local_win, 0 , 0);
 	wrefresh(load_win);
@@ -64,6 +61,7 @@ void load_menu()
 
 	my_menu = new_menu((ITEM **)my_items);
 	set_menu_win(my_menu, load_win);
+	set_menu_mark(my_menu, " ");
 	//set_menu_sub(my_menu, derwin(local_win, 6, 10, (LINES/2), COLS/3));
 	keypad(load_win, TRUE);
 
@@ -83,7 +81,7 @@ void load_menu()
 			case 'a':
 				//mvprintw(LINES-3, 0, "Item selected is : %s", item_name(current_item(my_menu)));
 				const char *blargh=item_name(current_item(my_menu));	
-
+				if (blargh[0]=='B'){c=='q';}
 				break;			
 		}
 		if (c=='q'){
@@ -107,7 +105,7 @@ void opt_menu()
 	int n_choices, i;
 	ITEM *cur_item;
 	WINDOW *opt_win;
-	opt_win = newwin(5, 31, ((LINES/2)-2), ((COLS/3)-6));
+	opt_win = newwin(5, 31, ((LINES/2)-2), ((COLS/3)+4));
 
 	//box(local_win, 0 , 0);
 	wrefresh(opt_win);
@@ -122,6 +120,7 @@ void opt_menu()
 
 	my_menu = new_menu((ITEM **)my_items);
 	set_menu_win(my_menu, opt_win);
+	set_menu_mark(my_menu, " ");
 	//set_menu_sub(my_menu, derwin(local_win, 6, 10, (LINES/2), COLS/3));
 	keypad(opt_win, TRUE);
 
@@ -141,7 +140,7 @@ void opt_menu()
 			case 'a':
 				//mvprintw(LINES-3, 0, "Item selected is : %s", item_name(current_item(my_menu)));
 				const char *blargh=item_name(current_item(my_menu));	
-
+				if (blargh[0]=='B'){c=='q';}
 				break;			
 		}
 		if (c=='q'){
@@ -180,6 +179,7 @@ void help_menu()
 
 	my_menu = new_menu((ITEM **)my_items);
 	set_menu_win(my_menu, help_win);
+	set_menu_mark(my_menu, " ");
 	//set_menu_sub(my_menu, derwin(local_win, 6, 10, (LINES/2), COLS/3));
 	keypad(help_win, TRUE);
 
@@ -199,7 +199,7 @@ void help_menu()
 			case 'a':
 				//mvprintw(LINES-3, 0, "Item selected is : %s", item_name(current_item(my_menu)));
 				const char *blargh=item_name(current_item(my_menu));	
-
+				if (blargh[0]=='B'){c=='q';}//ack
 				break;			
 		}
 		if (c=='q'){
@@ -237,6 +237,7 @@ void main_menu()
 
 	my_menu = new_menu((ITEM **)my_items);
 	set_menu_win(my_menu, local_win);
+	set_menu_mark(my_menu, " ");
 	//set_menu_sub(my_menu, derwin(local_win, 6, 10, (LINES/2), COLS/3));
 	keypad(local_win, TRUE);
 
@@ -311,7 +312,8 @@ int main()
 	attroff(COLOR_PAIR(1));
 
 	//getch();
-	mvprintw(((LINES/2)+5), ((COLS/2)-7), "q to Exit");
+	mvprintw(((LINES/2)+6), ((COLS/2)-7), "q for Back/Exit");
+	mvprintw(((LINES/2)+5), ((COLS/2)-7), "a to Select");
 	refresh();
 	
 	main_menu();
