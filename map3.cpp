@@ -118,15 +118,22 @@ int make_color(int num,int r, int g, int b)
 	init_pair (num, num, COLOR_BLACK);
 	return num;
 }
-/*
-randomize()
+
+void randomize()
 {
 	srand(time(NULL));
-	int rand_x=rand()%sizex;
-	int rand_y=rand()%sizey;
-	printw("x:%i y:%i",rand_x,rand_y);
+	int rand_x;
+	int rand_y;
+	while (getch()!='q'){
+		rand_x=rand()%sizex;
+		rand_y=rand()%sizey;
+		move(LINES-1,1);
+		printw("x:%i y:%i",rand_x,rand_y);
+		addstr("                                ");
+	}
+	
 }
-*/
+
 int main()
 {
 	initscr();	
@@ -154,6 +161,7 @@ int main()
 	philip.eval();
 	ben.eval();
 	print_map(chrome);
+	//randomize();
 	wrefresh(stdscr);
 	
 	view_tiles();
