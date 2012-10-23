@@ -118,15 +118,22 @@ int make_color(int num,int r, int g, int b)
 	init_pair (num, COLOR_BLACK, num);//init_pair(pairnumber, foreground, background)  each pair has a certain number, like color number
 	return num;
 }
-/*
-randomize()
+
+void randomize()
 {
 	srand(time(NULL));
-	int rand_x=rand()%sizex;
-	int rand_y=rand()%sizey;
-	printw("x:%i y:%i",rand_x,rand_y);
+	int rand_x;
+	int rand_y;
+	while (getch()!='q'){
+		rand_x=rand()%sizex;
+		rand_y=rand()%sizey;
+		move(LINES-1,1);
+		printw("x:%i y:%i",rand_x,rand_y);
+		addstr("                                ");
+	}
+	
 }
-*/
+
 int main()
 {	//ncurses functions:
 	initscr();	   //starts ncurses mode (reroutes input and output from the terminal)
@@ -156,8 +163,15 @@ int main()
 	ralph.eval();
 	philip.eval();
 	ben.eval();
+<<<<<<< HEAD
 	print_map(chrome);  //prints map to the screen
+	//randomize();
 	wrefresh(stdscr);   //refreshes screen- writes everything we do to screen and does tricky efficiency calculation
+=======
+	print_map(chrome);
+	//randomize();
+	wrefresh(stdscr);
+>>>>>>> b72e3c7d410db63eee1843bbf8e0bd642f737276
 	
 	view_tiles();      //allows navigation on screen
 	
