@@ -6,7 +6,7 @@ const int sizey=24;
 
 typedef unordered_map<char,int> Point;
 Point matrix[sizex][sizey];
-Point chrome;
+Point chrome; 
 
 class Source
 {
@@ -39,7 +39,7 @@ int Source::distance(int x0,int y0,int x1,int y1)
 	return round(temp);
 }
 //int Source::eval()
-int Source::eval()
+int Source::eval() //inserts pairs into points in our matrix
 {
 	int src_size=str/decay_rate;
 	int startx=x-src_size;
@@ -66,7 +66,7 @@ int Source::eval()
 			//dis=abs(evalx-x)+abs(evaly-y)
 			if (dis<src_size)
 			{
-				to_insert=make_pair(type,((src_size-dis)*decay_rate));
+				to_insert=make_pair(type,((src_size-dis)*decay_rate)); 
 				matrix[evalx][evaly].insert(to_insert);
 			}
 			evaly+=1;
