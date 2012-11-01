@@ -12,6 +12,7 @@ class Source
 {
 	public:
       Source(int X, int Y, char Type, int Decay_rate, int str);//nondefault constructor
+      Source();
 		int eval();
 		//int eval();
 		int distance(int x0,int y0,int x1,int y1);
@@ -22,6 +23,7 @@ class Source
 		int y;
 		int str;
 };
+Source::Source(){}
 Source::Source(int X,int Y,char Type, int Decay_rate,int Str)
 {
     x=X;
@@ -67,7 +69,18 @@ int Source::eval() //inserts pairs into points in our matrix
 			if (dis<src_size)
 			{
 				to_insert=make_pair(type,((src_size-dis)*decay_rate)); 
-				matrix[evalx][evaly].insert(to_insert);
+				//if the biome already exists at that point, average the two
+				if ((matrix[evalx][evaly]).count(type)>0){
+					matrix[evalx][evaly][type]+=to_insert.second;
+					matrix[evalx][evaly][type]/=2;
+				//otherwise, just add it
+				}else{
+					matrix[evalx][evaly].insert(to_insert);
+				}
+				//if water is there get rid of it
+				if (matrix[evalx][evaly].count('~')>0){
+					matrix[evalx][evaly].erase('~');
+				}
 			}
 			evaly+=1;
 		}

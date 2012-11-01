@@ -5,11 +5,7 @@
 #include <math.h>
 #include <ncurses.h>
 #include <utility>
-#include <typeinfo>
 #include "source.h"
-
-#include <sstream>
-#include <cstring>
 //g++ map3.cpp -Wall -pedantic -lncurses -std=c++0x
 //export TERM=xterm-256color
 using namespace std;
@@ -17,7 +13,7 @@ using namespace std;
 typedef unordered_map<char,int> Point;
 
 pair<char,int> find_high(Point point){
-	pair <char,int> high ('~',0);  //makes pair which it thinks its high value
+	pair <char,int> high ('~',1);  //makes pair which it thinks its high value
 	for(auto& cur_pair: point){    //iterates through all the pairs in an unordered map
 		if (cur_pair.second>high.second){
 			high=cur_pair;
@@ -32,7 +28,7 @@ void fill_points()
 	int i2=0;
 	for (i=0;i<sizex;i+=1){
 		for(i2=0;i2<sizey;i2+=1){
-			Point empty={{'~',0}}; //instantiates an undordered map with a pair already inside. {{ }}
+			Point empty={{'~',1}}; //instantiates an undordered map with a pair already inside. {{ }}
 			matrix[i][i2]=empty;
 		}
 	}
@@ -40,19 +36,13 @@ void fill_points()
 
 void print_map(Point chrome)
 {
-	pair <char,int> highest ('~',0);
+	pair <char,int> highest ('~',1);
 	int i=0;
 	int i2=0;
 	Point cur_point;
 	for(i=0;i<sizex;i+=1){
 		for(i2=0;i2<sizey;i2+=1){
 			cur_point=matrix[i][i2];
-			/*highest=make_pair('~',0);
-			for(auto& cur_pair: cur_point){
-				if (cur_pair.second>highest.second){
-					highest=cur_pair;
-				}
-			}*/
 			highest=find_high(cur_point);        // finds highest value in unordered map 
 			int color_num=chrome[highest.first]; // gets color number for that highest value
 			
@@ -119,18 +109,38 @@ int make_color(int num,int r, int g, int b)
 	return num;
 }
 
-void randomize()
+void randomize(char types[],int t_size)
 {
 	srand(time(NULL));
-	int rand_x;
-	int rand_y;
-	while (getch()!='q'){
-		rand_x=rand()%sizex;
-		rand_y=rand()%sizey;
+	int r_x; //random x coordinate max
+	int r_y; //random y cordinate max
+	char r_t; //random type from array 
+	int r_str; //random strength max plus 1
+	int r_d; //random decay rate from 1 to 2
+	int i=0;
+	int r_num; //random type index
+	const int num_source=(sizex*sizey)/10;
+	//char c;
+	Source sources[num_source]; //list of sources may be used to save map in the future.
+	
+	while (i<num_source){
+		//c=getch();
+		//if (c=='q'){break;}
+		r_x=rand()%sizex;
+		r_y=rand()%sizey;
+		r_num=rand()%t_size;
+		r_num-=1;
+		r_t=types[r_num];
+		r_str=rand()%7+2;
+		r_d=rand()%2+1;
+		sources[i]=Source(r_x,r_y,r_t,r_d,r_str);
+		sources[i].eval();
 		move(LINES-1,1);
-		printw("x:%i y:%i",rand_x,rand_y);
-		addstr("                                ");
-	}
+		refresh();
+		print_map(chrome);
+
+		i+=1;
+		}
 	
 }
 
@@ -145,26 +155,18 @@ int main()
 	chrome['^']=make_color(9,500,500,0);    //mountains
 	chrome['.']=make_color(10,0,1000,0);   //hills
 	chrome['~']=make_color(11,0,0,1000);    //water
-	chrome['-']=make_color(12,300,300,300); //gravel
-	chrome['`']=make_color(13,1000,1000,0); //dirt
+	chrome['_']=make_color(12,300,300,300); //gravel
+	chrome[',']=make_color(13,1000,1000,0); //dirt
 	chrome['|']=make_color(14,100,600,100); //trees
+	chrome['f']=make_color(15,40,400,160);
 	
-	//making sources, Source(x,y,char type, decay rate, strength)
-	Source bob=Source(7,18,'`',2,6);
-	Source max=Source(11,14,'.',3,9);
-	Source ralph=Source (9,14,'-',2,10);
-	Source philip=Source(13,15,'^',2,8);
-	Source ben=Source(6,10,'|',1,3);
-	
-	fill_points(); //makes unordered maps not null/ makes evry point water with value of zero/ goodbye segmentation faults
+	fill_points(); //makes unordered maps not null/ makes evry point water with value of one/ goodbye segmentation faults
 	//Say hi to our different sources, they are friendly:	
-	bob.eval();
-	max.eval();
-	ralph.eval();
-	philip.eval();
-	ben.eval();
+	char types[]={'^','|','.',',','_','f'};
+	int typesc=sizeof(types);
+	randomize(types,typesc);
 	print_map(chrome);  //prints map to the screen
-	//randomize();
+
 	wrefresh(stdscr);   //refreshes screen- writes everything we do to screen and does tricky efficiency calculation
 	
 	view_tiles();      //allows navigation on screen
