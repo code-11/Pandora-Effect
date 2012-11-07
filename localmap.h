@@ -21,13 +21,15 @@ localmap::localmap(){}
 void localmap::initialize()
 {
 	refx=4;
-	refy=0;
+	refy=1;
 	int i=0;
 	int j=0;
 	while (i<maxx){
 		j=0;
 		while (j<maxy){
-			map[i][j]=entity(',');
+			if ((j==3)&&(i==3)){
+			map[i][j]=entity('s');}
+			else{map[i][j]=entity(',');}
 			j+=1;
 		}
 		i+=1;
@@ -43,12 +45,12 @@ void localmap::print_map()
 	while (i<maxx){
 		j=0;
 		while (j<maxy){
-			if ((j+refy<maxy)&&(i+refx<maxx)){
+			if ((j+refy<maxy)&&(i+refx<maxx)&&(j+refy>0)&&(i+refx>0)){
 				move(j+refy,i+refx);
 				addch(map[i+refx][j+refy].get_val());
 			}else{
 				move(j+refy,i+refx);
-				addch('#');
+				addch(' ');
 			}
 			j+=1;
 		}
@@ -72,7 +74,7 @@ void localmap::inspect(){
 			move(LINES-1,1);
 			if (viewx<0){
 				viewx=0;
-				refx-=1;
+				addstr("bump a");
 				//printw("refx: %i",refx);
 			}
 			if (viewy<0){
@@ -87,7 +89,16 @@ void localmap::inspect(){
 				viewy=maxy-1;
 				addstr("bump d");
 			}
+			if (refy<0){
+				refy=0;
+				addstr("bump e");
+			}
+			if (refx<0){
+				refx=0;;
+				addstr("bump f");
+			}
 			print_map();
+			touchwin(stdscr);
 			refresh();
 			move(viewy,viewx);
 		}
