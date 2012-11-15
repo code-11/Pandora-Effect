@@ -1,7 +1,7 @@
 #include "entity.h"
 #include <ncurses.h>
-const int maxx=20; //controls the size of the local map
-const int maxy=20;
+const int maxx=100; //controls the size of the local map
+const int maxy=100;
 class localmap
 {
 	public:
@@ -10,6 +10,7 @@ class localmap
       void print_map();
       void inspect();
       entity get_point(int x,int y);
+      void set_point(int x,int y, entity e);
 	private:
 		entity map[maxx][maxy];
 		int refx;
@@ -30,15 +31,13 @@ void localmap::initialize()
 	int i=0;
 	int j=0;
 	winmaxx=80;
-	winmaxy=40;
+	winmaxy=30;
 
 	local_win = newwin(winmaxy, winmaxx, 0, 0);
 	while (i<maxx){
 		j=0;
 		while (j<maxy){
-			if ((j==3)&&(i==3)){
-			map[i][j]=entity('s');}
-			else{map[i][j]=entity(',');}
+			map[i][j]=entity(',');
 			j+=1;
 		}
 		i+=1;
@@ -47,6 +46,9 @@ void localmap::initialize()
 }
 entity localmap::get_point(int x,int y){ 
 	return map[x][y];
+}
+void localmap::set_point(int x, int y,entity e){
+	map[x][y]=e;
 }
 void localmap::print_map()
 {
@@ -60,7 +62,7 @@ void localmap::print_map()
 				waddch(local_win,map[i+refx][j+refy].get_val());
 			}else{
 				wmove(local_win,j,i);
-				waddch(local_win,' ');
+				waddch(local_win,ACS_BLOCK);
 			}
 			j+=1;
 		}
@@ -74,6 +76,8 @@ void localmap::inspect(){
 		char c;
 		while (c!='q'){
 			c=wgetch(local_win);
+			move(LINES-1,1);	
+			addstr("                                          ");
 			if (c=='w'){viewy-=1;}
 			if (c=='a'){viewx-=1;}
 			if (c=='s'){viewy+=1;}
@@ -103,9 +107,25 @@ void localmap::inspect(){
 				refy+=1;
 				if (c=='S'){refy+=3;}
 			}
+			if (refx<0){
+				refx=0;
+			}
+			if (refy<0){
+				refy=0;
+			}
+			if (refy+winmaxy>maxy+1){
+				refy=maxy-winmaxy+1;
+			}
+			if (refx+winmaxx>maxx+1){
+				refx=maxx-winmaxx+1;
+			}
+
 			print_map();
 			//touchwin(stdscr);
 			wrefresh(local_win);
+			move(LINES-1,1);
+			printw("refx:%i refy:%i viewx:%i viewy:%i",refx,refy,viewx+refx,viewy+refy);
+			refresh();
 			wmove(local_win,viewy,viewx);
 		}
 }
