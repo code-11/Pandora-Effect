@@ -52,6 +52,7 @@ void localmap::set_point(int x, int y,entity e){
 }
 void localmap::print_map()
 {
+	init_pair(1,COLOR_RED,COLOR_BLACK);
 	int i=0;
 	int j=0;
 	while (i<winmaxx){ //window size x
@@ -59,10 +60,17 @@ void localmap::print_map()
 		while (j<winmaxy){ //window size y
 			if ((i+refx<maxx)&&(i+refx>0)&&(j+refy<maxy)&&(j+refy>0)){
 				wmove(local_win,j,i);
-				waddch(local_win,map[i+refx][j+refy].get_val());
+				char temp_val=map[i+refx][j+refy].get_val();
+				if (temp_val!=','){
+					wattron(local_win,COLOR_PAIR(1)|A_DIM);
+					waddch(local_win,temp_val);
+					wattroff(local_win,COLOR_PAIR(1)|A_DIM);
+				}else{
+					waddch(local_win,',');
+				}
 			}else{
 				wmove(local_win,j,i);
-				waddch(local_win,ACS_BLOCK);
+				waddch(local_win,ACS_STERLING);
 			}
 			j+=1;
 		}

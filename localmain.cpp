@@ -4,6 +4,10 @@ int main()
 {
 	initscr();
 	noecho();
+	start_color();
+	init_color(COLOR_BLACK,0,0,0);
+	init_color(COLOR_RED,1000,0,0);
+
 	localmap some_map=localmap();
 	some_map.initialize();
 
@@ -29,7 +33,7 @@ int main()
 
 	some_map.set_point(30,70,greg);
 
-	
+
 
 	some_map.print_map();
 	some_map.inspect();
