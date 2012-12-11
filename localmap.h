@@ -1,14 +1,15 @@
 #include "entity.h"
 #include <ncurses.h>
+#include <unordered_map>
 const int maxx=100; //controls the size of the local map
 const int maxy=100;
 class localmap
 {
 	public:
       localmap();
-      void initialize();
-      void print_map();
-      void inspect();
+      void initialize(unordered_map<char,int> biomes);
+      void print_map(unordered_map<char,int> biomes);//get rid of this arguement later
+      void inspect(unordered_map<char,int> biomes);
       entity get_point(int x,int y);
       void set_point(int x,int y, entity e);
 	private:
@@ -24,7 +25,7 @@ class localmap
 		WINDOW *local_win;
 };
 localmap::localmap(){}
-void localmap::initialize()
+void localmap::initialize(unordered_map<char,int> biomes)  //makes world
 {
 	refx=0;
 	refy=0;
@@ -50,11 +51,22 @@ entity localmap::get_point(int x,int y){
 void localmap::set_point(int x, int y,entity e){
 	map[x][y]=e;
 }
-void localmap::print_map()
+void localmap::print_map(unordered_map<char,int> biomes)//get rid of this argument later
 {
 	init_pair(1,COLOR_RED,COLOR_BLACK);
 	int i=0;
 	int j=0;
+	
+	//Just here for testing, take away later
+	pair <char,int> high ('~',1);  //makes pair which it thinks its high value
+	for(auto& cur_pair: biomes){    //iterates through all the pairs in an unordered map
+		if (cur_pair.second>high.second){
+			high=cur_pair;
+		}
+	}
+	int color_num=chrome[high.first];
+
+
 	while (i<winmaxx){ //window size x
 		j=0;
 		while (j<winmaxy){ //window size y
@@ -62,15 +74,19 @@ void localmap::print_map()
 				wmove(local_win,j,i);
 				char temp_val=map[i+refx][j+refy].get_val();
 				if (temp_val!=','){
-					wattron(local_win,COLOR_PAIR(1)|A_DIM);
+					wattron(local_win,COLOR_PAIR(color_num));
 					waddch(local_win,temp_val);
-					wattroff(local_win,COLOR_PAIR(1)|A_DIM);
+					wattroff(local_win,COLOR_PAIR(color_num));
 				}else{
+					wattron(local_win,COLOR_PAIR(color_num));
 					waddch(local_win,',');
+					wattroff(local_win,COLOR_PAIR(color_num));
 				}
 			}else{
 				wmove(local_win,j,i);
-				waddch(local_win,ACS_STERLING);
+				wattron(local_win,COLOR_PAIR(color_num));
+				waddch(local_win,ACS_DIAMOND);
+				wattroff(local_win,COLOR_PAIR(color_num));
 			}
 			j+=1;
 		}
@@ -78,14 +94,14 @@ void localmap::print_map()
 	}
 	wrefresh(local_win);
 }
-void localmap::inspect(){
+void localmap::inspect(unordered_map<char,int> biomes){
 		viewx=0;
 		viewy=0;
 		char c;
 		while (c!='q'){
 			c=wgetch(local_win);
 			move(LINES-1,1);	
-			addstr("                                          ");
+			addstr("                                                                          ");
 			if (c=='w'){viewy-=1;}
 			if (c=='a'){viewx-=1;}
 			if (c=='s'){viewy+=1;}
@@ -128,7 +144,8 @@ void localmap::inspect(){
 				refx=maxx-winmaxx+1;
 			}
 
-			print_map();
+
+			print_map(biomes);
 			//touchwin(stdscr);
 			wrefresh(local_win);
 			move(LINES-1,1);
@@ -136,4 +153,7 @@ void localmap::inspect(){
 			refresh();
 			wmove(local_win,viewy,viewx);
 		}
+		wclear(local_win);
+		wrefresh(local_win);
+		delwin(local_win);
 }
