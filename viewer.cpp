@@ -12,6 +12,55 @@
 //export TERM=xterm-256color
 using namespace std;
 
+localmap local_maps[sizex][sizey];
+
+//Defining the biomes- should really be
+//in a text file read in at the begining, but oh well
+
+//Mountian
+char* mountain_tile1[]={"12345","23456","34567","45678","56789"};
+feature mountain_name1=feature(); //1,2,5,5,list
+feature mountain_list[]={mountain_name1};
+biome mountain=biome("Mountain",mountain_list);
+
+//Desert
+char* desert_tile1[]={"12345","23456","34567","45678","56789"};
+feature desert_name1=feature(); //1,2,5,5,list
+feature desert_list[]={desert_name1};
+biome desert=biome("Desert",desert_list);
+
+//Water
+char* water_tile1[]={"12345","23456","34567","45678","56789"};
+feature water_name1=feature(); //1,2,5,5,list
+feature water_list[]={water_name1};
+biome water=biome("Water",water_list);
+
+//Forest
+char* forest_tile1[]={"12345","23456","34567","45678","56789"};
+feature forest_name1=feature(); //1,2,5,5,list
+feature forest_list[]={forest_name1};
+biome forest=biome("Forest",forest_list);
+
+//Flatland
+char* flatland_tile1[]={"12345","23456","34567","45678","56789"};
+feature flatland_name1=feature(); //1,2,5,5,list
+feature flatland_list[]={flatland_name1};
+biome flatland=biome("Flatland",flatland_list);
+
+//Grassland
+char* grassland_tile1[]={"12345","23456","34567","45678","56789"};
+feature grassland_name1=feature(); //1,2,5,5,list
+feature grassland_list[]={grassland_name1};
+biome grassland=biome("Grassland",grassland_list);
+
+///Swamp
+char* swamp_tile1[]={"12345","23456","34567","45678","56789"};
+feature swamp_name1=feature(); //1,2,5,5,list
+feature swamp_list[]={swamp_name1};
+biome swamp=biome("Swamp",swamp_list);
+
+unordered_map<char,biome> set_biomes;
+
 typedef unordered_map<char,int> Point;
 
 pair<char,int> find_high(Point point){
@@ -83,7 +132,7 @@ void view_tiles(){   //allows navigation with a.w.s.d keys also displays positio
 			//Get rid of the arguments for print map and inspect later
 			//only initialize should looks at the biomes.
 			localmap some_map=localmap();
-			some_map.initialize(matrix[viewx][viewy]);
+			some_map.initialize(matrix[viewx][viewy], set_biomes);
 			some_map.print_map(matrix[viewx][viewy]);
 			some_map.inspect(matrix[viewx][viewy]);
 			print_map(chrome);
@@ -154,7 +203,16 @@ void randomize(char types[],int t_size)
 		print_map(chrome);
 
 		i+=1;
+	}
+	int j;
+
+	for(i=0; i<sizex; i+=1){
+		for(j=0; j<sizey; j+=1){
+			local_maps[i][j].initialize(matrix[i][j],set_biomes);   //Going through and initializing the global map with local map at each point
 		}
+	}
+
+
 	
 }
 
@@ -164,15 +222,15 @@ int main()
 	start_color();    //instantiates 8 color macros and allows those 8 colors on the screen
 	noecho();        //doesn't allow player to write onto screen
 	init_color(COLOR_BLACK,0,0,0);//makes the background actually black, non of this semi-black grey bussiness
-	
+
 	//our definded color functions
 	chrome['^']=make_color(9,500,500,0);    //mountains
-	chrome['.']=make_color(10,0,1000,0);   //hills
+	chrome['.']=make_color(10,0,1000,0);   //hills/grassland
 	chrome['~']=make_color(11,0,0,1000);    //water
-	chrome['_']=make_color(12,300,300,300); //gravel
-	chrome[',']=make_color(13,1000,1000,0); //dirt
-	chrome['|']=make_color(14,100,600,100); //trees
-	chrome['f']=make_color(15,40,400,160);
+	chrome['_']=make_color(12,300,300,300); //flatland
+	chrome[',']=make_color(13,1000,1000,0); //desert
+	chrome['|']=make_color(14,100,600,100); //swamp
+	chrome['f']=make_color(15,40,400,160); //forest
 	
 	fill_points(); //makes unordered maps not null/ makes evry point water with value of one/ goodbye segmentation faults
 	//Say hi to our different sources, they are friendly:	
